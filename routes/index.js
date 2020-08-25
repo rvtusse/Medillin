@@ -7,6 +7,9 @@ const axios = require('axios')
 const config = require('../config')
 const api = Cosmic()
 const bucket = api.bucket(config.bucket)
+const fs = require('fs')
+const path = require('path')
+
 
 router.get('/', (req, res) => {
   async.series({
@@ -136,6 +139,7 @@ router.get('/photo-gallery/:slug', (req, res) => {
       res.render('album.handlebars')
   })
 })
+
 
 router.get('/videos', (req, res) => {
   async.series({

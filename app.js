@@ -9,7 +9,7 @@ const cos = require('cors')
 const morgan = require('morgan')
 const truncate = require('truncate-html')
 const moment = require('moment')
-
+const fs = require('fs')
 const routes = require('./routes/index');
 
 const app = express();
