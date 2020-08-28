@@ -35,7 +35,7 @@ router.get('/videos', function(req, res){
 });
 
 router.get('/video', function(req, res) {
-  const path = 'Public/test.mp4'
+  const path = 'Public/Mandem.mp4'
   const stat = fs.statSync(path)
   const fileSize = stat.size
   const range = req.headers.range
@@ -68,7 +68,7 @@ router.get('/video', function(req, res) {
   }
   })
   router.get('/video1', function(req, res) {
-    const path = 'Public/sample.mp4'
+    const path = 'Public/chino.mp4'
     const stat = fs.statSync(path)
     const fileSize = stat.size
     const range = req.headers.range
