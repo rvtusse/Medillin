@@ -2,11 +2,15 @@
 <div class="body">
     <div class="videos-wrapper">
         <div class="video-body">
-            {{#each videos}}
-                <div class="video">
-                    {{{this.metadata.embed_code}}}
-                </div>
-            {{/each}}
+            <video style="height: 400px; width:600px;" id="videoPlayer" controls muted="muted" >
+                <source src="http://localhost:3000/video" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="video-body">
+            <video style="height: 400px; width:600px;" id="videoPlayer" controls muted="muted" >
+                <source src="http://localhost:3000/video1" type="video/mp4">
+            </video>
         </div>
     </div>
     {{> footer}}

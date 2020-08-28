@@ -4,10 +4,7 @@
         {{#getYear}}{{/getYear}} Medellín Motion
     </div>
     <div>
-        {{#each socials}}
-        <a class="social-link" href="{{this}}" target="_blank">
-            <i class="fa fa-{{@key}}" title="{{@key}}"></i>
-        </a> {{/each}}
+        {{> social-links}}
     </div>
     {{> signup-form}}
 </footer>

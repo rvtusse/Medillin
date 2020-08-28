@@ -10,188 +10,100 @@ const bucket = api.bucket(config.bucket)
 const fs = require('fs')
 const path = require('path')
 
+router.get('/', function(req, res){
+  res.render('index.handlebars')
+});
 
-router.get('/', (req, res) => {
-  async.series({
-    siteSettings(callback) {
-      bucket.getObject({ slug: 'site-settings' }).then(response => {
-        callback(null, response.object.metadata)
-      })
-    },
-    homePage(callback) {
-      bucket.getObject({ slug: 'home-page' }).then(response => {
-        callback(null, response.object.metadata)
-      })
-    },
-    tourDates(callback) {
-      bucket.getObjects({ type: 'tour-dates' }).then(response => {
-        callback(null, response.objects)
-      })
-    }
-  }, (err, results) => {
-    res.locals.settings = results.siteSettings
-    res.locals.homepage = results.homePage
-    const socials = {
-      twitter: results.siteSettings.twitter,
-      instagram: results.siteSettings.instagram,
-      youtube: results.siteSettings.youtube,
-      apple: results.siteSettings.apple_music,
-      spotify: results.siteSettings.spotify,
-      bandcamp: results.siteSettings.bandcamp
-    }
-    res.locals.socials = socials
-    res.locals.tourDates = _.sortBy(results.tourDates, tourDate => (
-      tourDate.metadata.date
-    )).slice(0,3)
-    res.locals.title = results.siteSettings.band_name
 
-    res.render('index.handlebars')
+router.get('/tour', function(req, res){
+  res.render('tour.handlebars')
+});
+
+
+router.get('/photo-gallery', function(req, res){
+  res.render('gallery.handlebars')
+});
+
+
+router.get('/photo-gallery/:slug', function(req, res){
+  res.render('album.handlebars')
+});
+
+
+router.get('/videos', function(req, res){
+  res.render('videos.handlebars')
+});
+
+router.get('/video', function(req, res) {
+  const path = 'Public/test.mp4'
+  const stat = fs.statSync(path)
+  const fileSize = stat.size
+  const range = req.headers.range
+  
+  if (range) {
+  const parts = range.replace(/bytes=/, "").split("-")
+  const start = parseInt(parts[0], 10)
+  const end = parts[1]
+  ? parseInt(parts[1], 10)
+  : fileSize-1
+  
+  const chunksize = (end-start)+1
+  const file = fs.createReadStream(path, {start, end})
+  const head = {
+  'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+  'Accept-Ranges': 'bytes',
+  'Content-Length': chunksize,
+  'Content-Type': 'video/mp4',
+  }
+  
+  res.writeHead(206, head)
+  file.pipe(res)
+  } else {
+  const head = {
+  'Content-Length': fileSize,
+  'Content-Type': 'video/mp4',
+  }
+  res.writeHead(200, head)
+  fs.createReadStream(path).pipe(res)
+  }
   })
-})
+  router.get('/video1', function(req, res) {
+    const path = 'Public/sample.mp4'
+    const stat = fs.statSync(path)
+    const fileSize = stat.size
+    const range = req.headers.range
+    
+    if (range) {
+    const parts = range.replace(/bytes=/, "").split("-")
+    const start = parseInt(parts[0], 10)
+    const end = parts[1]
+    ? parseInt(parts[1], 10)
+    : fileSize-1
+    
+    const chunksize = (end-start)+1
+    const file = fs.createReadStream(path, {start, end})
+    const head = {
+    'Content-Range': `bytes ${start}-${end}/${fileSize}`,
+    'Accept-Ranges': 'bytes',
+    'Content-Length': chunksize,
+    'Content-Type': 'video/mp4',
+    }
+    
+    res.writeHead(206, head)
+    file.pipe(res)
+    } else {
+    const head = {
+    'Content-Length': fileSize,
+    'Content-Type': 'video/mp4',
+    }
+    res.writeHead(200, head)
+    fs.createReadStream(path).pipe(res)
+    }
+    })
+router.get('/bio', function(req, res){
+  res.render('bio.handlebars')
+});
 
-router.get('/tour', async (req, res) => {
-  async.series({
-    siteSettings(callback) {
-      bucket.getObject({ slug: 'site-settings' }).then(response => {
-        callback(null, response.object.metadata)
-      })
-    },
-    tourDates(callback) {
-      bucket.getObjects({ type: 'tour-dates' }).then(response => {
-        callback(null, response.objects)
-      })
-    }
-  }, (err, results) => {
-    res.locals.settings = results.siteSettings
-    const socials = {
-      twitter: results.siteSettings.twitter,
-      instagram: results.siteSettings.instagram,
-      youtube: results.siteSettings.youtube,
-      apple: results.siteSettings.apple_music,
-      spotify: results.siteSettings.spotify,
-      bandcamp: results.siteSettings.bandcamp
-    }
-    res.locals.socials = socials
-    res.locals.tourDates = _.sortBy(results.tourDates, tourDate => (
-      tourDate.metadata.date
-    ))
-    res.locals.title = results.siteSettings.band_name + ' | Tour Dates'
-
-    res.render('tour.handlebars')
-  })
-})
-
-router.get('/photo-gallery', (req, res) => {
-  async.series({
-    siteSettings(callback) {
-      bucket.getObject({ slug: 'site-settings' }).then(response => {
-        callback(null, response.object.metadata)
-      })
-    },
-    galleries(callback) {
-      bucket.getObjects({ type: 'galleries' }).then(response => {
-        callback(null, response.objects)
-      })
-    }
-  }, (err, results) => {
-      res.locals.settings = results.siteSettings
-      const socials = {
-        twitter: results.siteSettings.twitter,
-        instagram: results.siteSettings.instagram,
-        youtube: results.siteSettings.youtube,
-        apple: results.siteSettings.apple_music,
-        spotify: results.siteSettings.spotify,
-        bandcamp: results.siteSettings.bandcamp
-      }
-      res.locals.socials = socials
-      res.locals.title = results.siteSettings.band_name + ' | Photo Gallery'
-      res.locals.galleries = results.galleries
-      res.render('gallery.handlebars')
-  })
-})
-
-router.get('/photo-gallery/:slug', (req, res) => {
-  async.series({
-    siteSettings(callback) {
-      bucket.getObject({ slug: 'site-settings' }).then(response => {
-        callback(null, response.object.metadata)
-      })
-    },
-    album(callback) {
-      bucket.getObject({ slug: req.params.slug }).then(response => {
-        callback(null, response.object)
-      })
-    }
-  }, (err, results) => {
-      res.locals.settings = results.siteSettings
-      const socials = {
-        twitter: results.siteSettings.twitter,
-        instagram: results.siteSettings.instagram,
-        youtube: results.siteSettings.youtube,
-        apple: results.siteSettings.apple_music,
-        spotify: results.siteSettings.spotify,
-        bandcamp: results.siteSettings.bandcamp
-      }
-      res.locals.socials = socials
-      res.locals.title = results.siteSettings.band_name + ' | ' + results.album.title
-      res.locals.album = results.album
-      res.locals.photos = results.album.metadata.photos
-      res.render('album.handlebars')
-  })
-})
-
-
-router.get('/videos', (req, res) => {
-  async.series({
-    siteSettings(callback) {
-      bucket.getObject({ slug: 'site-settings' }).then(response => {
-        callback(null, response.object.metadata)
-      })
-    },
-    videos(callback) {
-      bucket.getObjects({ type: 'videos' }).then(response => {
-        callback(null, response.objects)
-      })
-    }
-  }, (err, results) => {
-    res.locals.settings = results.siteSettings
-    const socials = {
-      twitter: results.siteSettings.twitter,
-      instagram: results.siteSettings.instagram,
-      youtube: results.siteSettings.youtube,
-      apple: results.siteSettings.apple_music,
-      spotify: results.siteSettings.spotify,
-      bandcamp: results.siteSettings.bandcamp
-    }
-    res.locals.socials = socials
-    res.locals.title = results.siteSettings.band_name + ' | Videos'
-    res.locals.videos = results.videos
-    res.render('videos.handlebars')
-  })
-})
-
-router.get('/bio', (req, res) => {
-  async.series({
-    siteSettings(callback) {
-      bucket.getObject({ slug: 'site-settings' }).then(response => {
-        callback(null, response.object.metadata)
-      })
-    }
-  }, (err, results) => {
-    res.locals.settings = results.siteSettings
-    const socials = {
-      twitter: results.siteSettings.twitter,
-      instagram: results.siteSettings.instagram,
-      youtube: results.siteSettings.youtube,
-      apple: results.siteSettings.apple_music,
-      spotify: results.siteSettings.spotify,
-      bandcamp: results.siteSettings.bandcamp
-    }
-    res.locals.socials = socials
-    res.locals.title = results.siteSettings.band_name + ' | Bio'
-    res.render('bio.handlebars')
-  })
-})
 
 router.post('/signup', (req, res) => {
   const email = req.body.email

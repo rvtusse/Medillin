@@ -13,10 +13,10 @@ const fs = require('fs')
 const routes = require('./routes/index');
 
 const app = express();
-app.locals.cosmicConfig = require('./config')
-const env = process.env.NODE_ENV || 'development';
-app.locals.ENV = env;
-app.locals.ENV_DEVELOPMENT = env == 'development';
+// app.locals.cosmicConfig = require('./config')
+// const env = process.env.NODE_ENV || 'development';
+// app.locals.ENV = env;
+// app.locals.ENV_DEVELOPMENT = env == 'development';
 
 
 // view engine setup

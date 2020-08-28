@@ -10,21 +10,20 @@
         <div class="box tour-dates">
             <h1>Upcoming Shows</h1>
             <div>
-                {{#each tourDates}}
+               
                     <div class="tour-date">
                         <span>To be added soon</span>
 
                         <div class="ticket-button">
-                            <a href="{{this.metadata.ticket_link}}">Get Tickets <i class="fa fa-long-arrow-right"></i></a>
+                            <a href="/">Get Tickets <i class="fa fa-long-arrow-right"></i></a>
                         </div>
                     </div>
-                {{/each}}
+               
             </div>
         </div>
         <div class="box">
             <h1>Bio</h1>
             <div class="bio">
-                {{truncateText settings.bio 70}}
                 <a href="/bio">Read More</a>
             </div>
         </div>
