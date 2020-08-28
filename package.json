@@ -9,6 +9,7 @@
     "cors": "^2.8.5"
   },
   "devDependencies": {},
+  "engines" : { "node" : "v12.14.0" },
   "scripts": {
     "test": "mocha"
   },
