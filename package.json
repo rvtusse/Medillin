@@ -6,14 +6,27 @@
   "dependencies": {
     "async": "^2.6.3",
     "axios": "^0.16.2",
-    "cors": "^2.8.5"
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "cosmicjs": "^3.3.1",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.1.0",
+    "handlebars": "^4.7.6",
+    "lodash": "^4.17.20",
+    "moment": "^2.27.0",
+    "morgan": "^1.10.0",
+    "serve-favicon": "^2.5.0",
+    "truncate-html": "^1.0.3"
   },
   "devDependencies": {},
   "engines": {
     "node": "v12.14.0"
   },
   "scripts": {
-    "test": "mocha"
+    "start": "node ./bin/www",
+    "test": "mocha --recursive test",
+    "dev": "nodemon ./bin/www"
   },
   "repository": {
     "type": "git",
